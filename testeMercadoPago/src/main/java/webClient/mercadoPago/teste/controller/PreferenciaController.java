@@ -1,6 +1,5 @@
 package webClient.mercadoPago.teste.controller;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -25,7 +24,7 @@ public class PreferenciaController {
 
     @Autowired
     PreferenciaService preferenciaService;
-    
+
     @Autowired
     OrderService orderService;
 
@@ -36,7 +35,6 @@ public class PreferenciaController {
     public ResponseEntity<Mono<PreferenciaRecordDTO>> postMethodName() {
 	PayerRecordDTO payer = new PayerRecordDTO("email@teste.com",
 						  new identificationRecordDTO("CPF", "cpfTeste124"));
-	
 
 	PreferenciaRecordDTO preferenciaObj = new PreferenciaRecordDTO(
 								       new ItemRecordDTO[] {
@@ -50,18 +48,18 @@ public class PreferenciaController {
 								       new BackUrlRecordDTO("https://www.dicio.com.br/sucesso/",
 											    "https://www.dicio.com.br/pendente/",
 											    "https://www.dicio.com.br/falha/"),
-								       webhook  + "?source_news=webhooks");
+								       webhook + "?source_news=webhooks");
 
 	Mono<PreferenciaRecordDTO> preferencia = preferenciaService.create(preferenciaObj);
 	preferencia.subscribe(p -> {
 	    OrderModel pedido = new OrderModel(p.id(), payer.identification().type(), payer.identification().number());
 	    orderService.save(pedido);
 
-	    System.out.println("--------------------------------------------------------");
+	    System.out.println("\n----------------------------------------------------------------------------------------------------------------");
 	    System.out.println("ID do pedido: " + pedido.getId());
 	    System.out.println("URL para notificação: " + webhook);
 	    System.out.println("sandbox_init_point: " + p.sandbox_init_point());
-	    System.out.println("--------------------------------------------------------");
+	    System.out.println("----------------------------------------------------------------------------------------------------------------\n");
 	});
 
 	return ResponseEntity.status(HttpStatus.OK).body(preferencia);

@@ -12,7 +12,7 @@ public class PreferenciaService {
 
     @Value("${MP.AccessToken}")
     private String mpAccessToken;
-    
+
     private final WebClient webClient;
 
     public PreferenciaService(WebClient.Builder builder) {
@@ -21,7 +21,7 @@ public class PreferenciaService {
 
     public Mono<PreferenciaRecordDTO> create(PreferenciaRecordDTO preferenciaRecordDTO) {
 	return webClient.post()
-			.header("Authorization", mpAccessToken)
+			.headers(h -> h.setBearerAuth(mpAccessToken))
 			.bodyValue(preferenciaRecordDTO)
 			.retrieve()
 			.bodyToMono(PreferenciaRecordDTO.class);

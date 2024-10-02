@@ -16,6 +16,5 @@ public class OrderService {
     @Transactional
     public void save(OrderModel order) {
 	orderRepository.save(order);
-	System.out.println("Pedido Salvo");
     }
 }
