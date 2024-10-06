@@ -16,13 +16,25 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderModel implements Serializable {
-    
+
     private static final long serialVersionUID = 1L;
-    
+
     @Id
-    String id;
+    String id_preferencia_mp;
     @Column
-    String identificationType;
+    String user_id;
     @Column
-    String identificationNumber;
+    String id_ficha;
+    @Column
+    int qtde_ficha;
+    @Column
+    double valorTotal;
+    @Column
+    String created_by;
+    @Column
+    String updated_by;
+    @Column
+    String expiration_date;
+    @Column
+    String status;
 }
