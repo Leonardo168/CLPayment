@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
-@RequestMapping("/mercadopago")
+@RequestMapping("/preferencia")
 public class PreferenciaController {
 
     @Autowired
@@ -36,7 +36,7 @@ public class PreferenciaController {
     String webhook;
 
     @PostMapping
-    public ResponseEntity<Mono<PreferenciaRecordDTO>> postMethodName(@RequestBody Map<String, Object> dados) {
+    public ResponseEntity<Mono<PreferenciaRecordDTO>> criarPedido(@RequestBody Map<String, Object> dados) {
 	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX");
 	ZoneId fusoBrasilia = ZoneId.of("America/Sao_Paulo");
 	String created_by = ZonedDateTime.now(fusoBrasilia).format(formatter);
@@ -61,8 +61,8 @@ public class PreferenciaController {
 								       userId, created_by, expiration_date);
 	
 	Mono<PreferenciaRecordDTO> preferencia = preferenciaService.create(preferenciaObj);
-	preferencia.subscribe(p -> {
-	    OrderModel pedido = new OrderModel(p.id(), userId, item.id(), item.quantity(),
+	preferencia.subscribe(pr -> {
+	    OrderModel pedido = new OrderModel(pr.id(), userId, item.id(), item.quantity(),
 					       (item.quantity() * item.unit_price()), created_by, created_by,
 					       expiration_date,	"pendente");
 	    orderService.save(pedido);
@@ -70,11 +70,12 @@ public class PreferenciaController {
 	    System.out.println("\n----------------------------------------------------------------------------------------------------------------");
 	    System.out.println("ID do pedido: " + pedido.getId_preferencia_mp());
 	    System.out.println("URL para notificação: " + webhook);
-	    System.out.println("sandbox_init_point: " + p.sandbox_init_point());
+	    System.out.println("sandbox_init_point: " + pr.init_point());
+	    System.out.println("sandbox_init_point: " + pr.sandbox_init_point());
 	    System.out.println("----------------------------------------------------------------------------------------------------------------\n");
 	});
 
 	return ResponseEntity.status(HttpStatus.OK).body(preferencia);
     }
-
+    
 }
