@@ -20,6 +20,8 @@ public class OrderModel implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
+    String id;
+    @Column
     String id_preferencia_mp;
     @Column
     String user_id;

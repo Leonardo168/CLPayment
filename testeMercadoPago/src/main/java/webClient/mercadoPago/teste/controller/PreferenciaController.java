@@ -4,6 +4,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,12 +44,13 @@ public class PreferenciaController {
 	String expiration_date = ZonedDateTime.now(fusoBrasilia).plusDays(7).format(formatter);
 
 	String userId = (String) dados.get("user_id");
+	String fichaId = (String) dados.get("id_ficha");
 
-	ItemRecordDTO item = new ItemRecordDTO((String) dados.get("id_ficha"), 
-	                                       (String) dados.get("title"), 
-	                                       (Integer) dados.get("qtde_ficha"), 
-	                                       "BRL", 
-	                                       (Integer) dados.get("unit_price"));
+	ItemRecordDTO item = new ItemRecordDTO(UUID.randomUUID().toString(),
+					       (String) dados.get("title"),
+					       (Integer) dados.get("qtde_ficha"),
+					       "BRL",
+					       (Integer) dados.get("unit_price"));
 
 	PreferenciaRecordDTO preferenciaObj = new PreferenciaRecordDTO(
 								       new ItemRecordDTO[] {
@@ -59,23 +61,23 @@ public class PreferenciaController {
 											    "https://www.dicio.com.br/falha/"),
 								       webhook + "?source_news=webhooks",
 								       userId, created_by, expiration_date);
-	
+
 	Mono<PreferenciaRecordDTO> preferencia = preferenciaService.create(preferenciaObj);
 	preferencia.subscribe(pr -> {
-	    OrderModel pedido = new OrderModel(pr.id(), userId, item.id(), item.quantity(),
+	    OrderModel pedido = new OrderModel(item.id(), pr.id(), userId, fichaId, item.quantity(),
 					       (item.quantity() * item.unit_price()), created_by, created_by,
-					       expiration_date,	"pendente");
+					       expiration_date, "pendente");
 	    orderService.save(pedido);
 
 	    System.out.println("\n----------------------------------------------------------------------------------------------------------------");
-	    System.out.println("ID do pedido: " + pedido.getId_preferencia_mp());
+	    System.out.println("ID do pedido: " + pedido.getId());
 	    System.out.println("URL para notificação: " + webhook);
-	    System.out.println("sandbox_init_point: " + pr.init_point());
+	    System.out.println("init_point: " + pr.init_point());
 	    System.out.println("sandbox_init_point: " + pr.sandbox_init_point());
 	    System.out.println("----------------------------------------------------------------------------------------------------------------\n");
 	});
 
 	return ResponseEntity.status(HttpStatus.OK).body(preferencia);
     }
-    
+
 }
