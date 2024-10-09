@@ -36,10 +36,12 @@ public class PreferenciaController {
     @Value("${MP.webhook}")
     String webhook;
 
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX");
+    ZoneId fusoBrasilia = ZoneId.of("America/Sao_Paulo");
+
     @PostMapping
     public ResponseEntity<Mono<PreferenciaRecordDTO>> criarPedido(@RequestBody Map<String, Object> dados) {
-	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX");
-	ZoneId fusoBrasilia = ZoneId.of("America/Sao_Paulo");
+
 	String created_by = ZonedDateTime.now(fusoBrasilia).format(formatter);
 	String expiration_date = ZonedDateTime.now(fusoBrasilia).plusDays(7).format(formatter);
 
@@ -79,5 +81,4 @@ public class PreferenciaController {
 
 	return ResponseEntity.status(HttpStatus.OK).body(preferencia);
     }
-
 }

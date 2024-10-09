@@ -1,5 +1,7 @@
 package webClient.mercadoPago.teste.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,5 +18,9 @@ public class OrderService {
     @Transactional
     public void save(OrderModel order) {
 	orderRepository.save(order);
+    }
+    
+    public Optional<OrderModel> findById(String id) {
+	return orderRepository.findById(id);
     }
 }
