@@ -25,7 +25,7 @@ import webClient.mercadoPago.teste.service.TransactionService;
 
 @RestController
 @RequestMapping("/pagamento")
-public class PagamentoController {
+public class PaymentController {
     @Autowired
     TransactionService transactionService;
 
@@ -81,7 +81,7 @@ public class PagamentoController {
 		    System.out.println("\n----------------------------------------------------------------------------------------------------------------");
 		    System.out.println("Preferência " + transaction.getPreference_id_mp() + " atualizada");
 		    System.out.println("----------------------------------------------------------------------------------------------------------------");
-
+		    
 		}
 	    }
 	});
