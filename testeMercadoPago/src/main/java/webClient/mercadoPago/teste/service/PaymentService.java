@@ -5,25 +5,25 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import reactor.core.publisher.Mono;
-import webClient.mercadoPago.teste.dto.PagamentoRecordDTO;
+import webClient.mercadoPago.teste.dto.PaymentRecordDTO;
 
 @Service
-public class PagamentoService {
+public class PaymentService {
     @Value("${MP.AccessToken}")
     private String mpAccessToken;
     
     private final WebClient webClient;
     
-    public PagamentoService(WebClient.Builder builder) {
+    public PaymentService(WebClient.Builder builder) {
 	webClient = builder.baseUrl("https://api.mercadopago.com/v1/payments").build();
     }
     
-    public Mono<PagamentoRecordDTO> findById(String idPagamento){
+    public Mono<PaymentRecordDTO> findById(String payment_id){
 	return webClient.get()
-		.uri("/{id}", idPagamento)
+		.uri("/{id}", payment_id)
 		.headers(h -> h.setBearerAuth(mpAccessToken))
 		.retrieve()
-		.bodyToMono(PagamentoRecordDTO.class);
+		.bodyToMono(PaymentRecordDTO.class);
     }
 
 }
