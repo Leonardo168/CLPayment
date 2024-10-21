@@ -19,6 +19,7 @@ import reactor.core.publisher.Mono;
 import webClient.mercadoPago.teste.dto.PaymentRecordDTO;
 import webClient.mercadoPago.teste.enums.TransactionStatus;
 import webClient.mercadoPago.teste.model.TransactionModel;
+import webClient.mercadoPago.teste.service.CLMainService;
 import webClient.mercadoPago.teste.service.PaymentService;
 import webClient.mercadoPago.teste.service.PreferenceService;
 import webClient.mercadoPago.teste.service.TransactionService;
@@ -26,6 +27,9 @@ import webClient.mercadoPago.teste.service.TransactionService;
 @RestController
 @RequestMapping("/pagamento")
 public class PaymentController {
+    @Autowired
+    CLMainService clMainService;
+    
     @Autowired
     TransactionService transactionService;
 
@@ -82,6 +86,7 @@ public class PaymentController {
 		    System.out.println("Preferência " + transaction.getPreference_id_mp() + " atualizada");
 		    System.out.println("----------------------------------------------------------------------------------------------------------------");
 		    
+		    clMainService.confirmPurchase(transaction_id).subscribe();
 		}
 	    }
 	});
