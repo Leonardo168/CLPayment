@@ -3,9 +3,9 @@ package webClient.mercadoPago.teste.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import webClient.mercadoPago.teste.model.OrderModel;
+import webClient.mercadoPago.teste.model.TransactionModel;
 
 @Repository
-public interface OrderRepository extends JpaRepository<OrderModel, String>{
+public interface TransactionRepository extends JpaRepository<TransactionModel, String> {
 
 }
