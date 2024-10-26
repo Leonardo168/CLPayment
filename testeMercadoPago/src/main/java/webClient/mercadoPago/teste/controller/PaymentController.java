@@ -5,6 +5,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,14 +65,15 @@ public class PaymentController {
 	    System.out.println("Valor: " + pg.transaction_amount());
 	    System.out.println("----------------------------------------------------------------------------------------------------------------");
 
-	    Optional<TransactionModel> transactionOptional = transactionService.findById(transaction_id);
+	    Optional<TransactionModel> transactionOptional = transactionService.findById(UUID.fromString(transaction_id));
 	    if (!transactionOptional.isPresent()) {
 		System.out.println("Transação " + transaction_id + " não encontrada");
 	    } else {
 		TransactionModel transaction = new TransactionModel();
 		BeanUtils.copyProperties(transactionOptional.get(), transaction);
-		LocalDateTime updated_by = LocalDateTime.now();
-		transaction.setUpdated_by(updated_by);
+		LocalDateTime update_date = LocalDateTime.now();
+		transaction.setPayment_id_mp(payment_id);
+		transaction.setUpdate_date(update_date);
 		transaction.setStatus(TransactionStatus.fromString(pg.status()));
 		
 		transactionService.save(transaction);
@@ -81,12 +83,12 @@ public class PaymentController {
 		System.out.println("----------------------------------------------------------------------------------------------------------------");
 
 		if (transaction.getStatus() == TransactionStatus.approved) {
-		    preferenciaService.update(transaction.getPreference_id_mp(), updated_by.atZone(brTimeZone).format(formatter)).subscribe();
+		    preferenciaService.update(transaction.getPreference_id_mp(), update_date.atZone(brTimeZone).format(formatter)).subscribe();
 		    System.out.println("\n----------------------------------------------------------------------------------------------------------------");
 		    System.out.println("Preferência " + transaction.getPreference_id_mp() + " atualizada");
 		    System.out.println("----------------------------------------------------------------------------------------------------------------");
 		    
-		    clMainService.confirmPurchase(transaction_id).subscribe();
+		    clMainService.confirmPurchase(transaction_id.toString()).subscribe();
 		}
 	    }
 	});

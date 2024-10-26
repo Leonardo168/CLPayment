@@ -1,6 +1,7 @@
 package webClient.mercadoPago.teste.service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,7 @@ public class TransactionService {
 	transactionRepository.save(transaction);
     }
     
-    public Optional<TransactionModel> findById(String id) {
-	return transactionRepository.findById(id);
+    public Optional<TransactionModel> findById(UUID transaction_id) {
+	return transactionRepository.findById(transaction_id);
     }
 }

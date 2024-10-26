@@ -44,12 +44,14 @@ public class PreferenceController {
     @PostMapping
     public ResponseEntity<Mono<PreferenceRecordDTO>> createPreference(@RequestBody Map<String, Object> data) {
 
-	LocalDateTime created_by = LocalDateTime.now();
+	LocalDateTime creation_date = LocalDateTime.now();
 	LocalDateTime expiration_date = LocalDateTime.now().plusDays(7);
+	
+	UUID transaction_id = UUID.randomUUID();
 
 	String inventory_id = (String) data.get("inventory_id");
 
-	ItemRecordDTO item = new ItemRecordDTO(UUID.randomUUID().toString(),
+	ItemRecordDTO item = new ItemRecordDTO(transaction_id.toString(),
 					       (String) data.get("title"),
 					       (Integer) data.get("chips_qty"),
 					       "BRL",
@@ -64,14 +66,14 @@ public class PreferenceController {
 											 "https://www.dicio.com.br/falha/"),
 								    webhook + "?source_news=webhooks",
 								    inventory_id,
-								    created_by.atZone(brTimeZone).format(formatter),
+								    creation_date.atZone(brTimeZone).format(formatter),
 								    expiration_date.atZone(brTimeZone).format(formatter));
 
 	Mono<PreferenceRecordDTO> preference = preferenceService.create(preferenceObj);
 	preference.subscribe(pr -> {
-	    TransactionModel transaction = new TransactionModel(item.id(), TransactionType.BUY_TICKETS,
-								TransactionStatus.pending, inventory_id,
-								item.quantity(), pr.id(), created_by, created_by,
+	    TransactionModel transaction = new TransactionModel(transaction_id, TransactionType.BUY_CHIPS,
+								TransactionStatus.pending, UUID.fromString(inventory_id),
+								item.quantity(), pr.id(), creation_date, creation_date,
 								expiration_date);
 
 	    transactionService.save(transaction);

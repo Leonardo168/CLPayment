@@ -2,6 +2,7 @@ package webClient.mercadoPago.teste.model;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -25,7 +26,7 @@ public class TransactionModel implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    private String transaction_id;
+    private UUID transaction_id;
     @Column
     @Enumerated(EnumType.STRING)
     private TransactionType type;
@@ -33,7 +34,7 @@ public class TransactionModel implements Serializable {
     @Enumerated(EnumType.STRING)
     private TransactionStatus status;
     @Column
-    private String inventory_id;
+    private UUID inventory_id;
     @Column
     private int chips_qty;
     @Column
@@ -41,15 +42,17 @@ public class TransactionModel implements Serializable {
     @Column
     private String preference_id_mp;
     @Column
-    private LocalDateTime created_by;
+    private String payment_id_mp;
     @Column
-    private LocalDateTime updated_by;
+    private LocalDateTime creation_date;
+    @Column
+    private LocalDateTime update_date;
     @Column
     private LocalDateTime expiration_date;
 
-    public TransactionModel(String transaction_id, TransactionType type, TransactionStatus status, String inventory_id,
-			    int chips_qty, String preference_id_mp, LocalDateTime created_by,
-			    LocalDateTime updated_by, LocalDateTime expiration_date) {
+    public TransactionModel(UUID transaction_id, TransactionType type, TransactionStatus status, UUID inventory_id,
+			    int chips_qty, String preference_id_mp, LocalDateTime creation_date,
+			    LocalDateTime update_date, LocalDateTime expiration_date) {
 	this.transaction_id = transaction_id;
 	this.type = type;
 	this.status = status;
@@ -57,8 +60,9 @@ public class TransactionModel implements Serializable {
 	this.chips_qty = chips_qty;
 	this.tournment_id_riot = null;
 	this.preference_id_mp = preference_id_mp;
-	this.created_by = created_by;
-	this.updated_by = updated_by;
+	this.payment_id_mp = null;
+	this.creation_date = creation_date;
+	this.update_date = update_date;
 	this.expiration_date = expiration_date;
     }
 
