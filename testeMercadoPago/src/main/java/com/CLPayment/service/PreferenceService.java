@@ -1,11 +1,12 @@
-package webClient.mercadoPago.teste.service;
+package com.CLPayment.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import com.CLPayment.dto.PreferenceRecordDTO;
+
 import reactor.core.publisher.Mono;
-import webClient.mercadoPago.teste.dto.PreferenceRecordDTO;
 
 @Service
 public class PreferenceService {

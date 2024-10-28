@@ -1,4 +1,4 @@
-package webClient.mercadoPago.teste.service;
+package com.CLPayment.service;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -6,9 +6,10 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.CLPayment.model.TransactionModel;
+import com.CLPayment.repository.TransactionRepository;
+
 import jakarta.transaction.Transactional;
-import webClient.mercadoPago.teste.model.TransactionModel;
-import webClient.mercadoPago.teste.repository.TransactionRepository;
 
 @Service
 public class TransactionService {

@@ -1,4 +1,4 @@
-package webClient.mercadoPago.teste.controller;
+package com.CLPayment.controller;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -18,15 +18,16 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.CLPayment.dto.PaymentRecordDTO;
+import com.CLPayment.enums.TransactionStatus;
+import com.CLPayment.model.TransactionModel;
+import com.CLPayment.service.CLMainService;
+import com.CLPayment.service.PaymentService;
+import com.CLPayment.service.PreferenceService;
+import com.CLPayment.service.RequestSignatureService;
+import com.CLPayment.service.TransactionService;
+
 import reactor.core.publisher.Mono;
-import webClient.mercadoPago.teste.dto.PaymentRecordDTO;
-import webClient.mercadoPago.teste.enums.TransactionStatus;
-import webClient.mercadoPago.teste.model.TransactionModel;
-import webClient.mercadoPago.teste.service.CLMainService;
-import webClient.mercadoPago.teste.service.PaymentService;
-import webClient.mercadoPago.teste.service.PreferenceService;
-import webClient.mercadoPago.teste.service.RequestSignatureService;
-import webClient.mercadoPago.teste.service.TransactionService;
 
 @RestController
 @RequestMapping("/pagamento")

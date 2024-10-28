@@ -1,4 +1,4 @@
-package webClient.mercadoPago.teste.dto;
+package com.CLPayment.dto;
 
 import java.util.List;
 

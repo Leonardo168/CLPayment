@@ -1,8 +1,11 @@
-package webClient.mercadoPago.teste.model;
+package com.CLPayment.model;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
+
+import com.CLPayment.enums.TransactionStatus;
+import com.CLPayment.enums.TransactionType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,8 +16,6 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import webClient.mercadoPago.teste.enums.TransactionStatus;
-import webClient.mercadoPago.teste.enums.TransactionType;
 
 @Entity
 @Table(name = "transactions")

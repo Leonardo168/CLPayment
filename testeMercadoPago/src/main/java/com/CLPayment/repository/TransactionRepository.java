@@ -1,11 +1,11 @@
-package webClient.mercadoPago.teste.repository;
+package com.CLPayment.repository;
 
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import webClient.mercadoPago.teste.model.TransactionModel;
+import com.CLPayment.model.TransactionModel;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<TransactionModel, UUID> {

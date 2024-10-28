@@ -1,4 +1,4 @@
-package webClient.mercadoPago.teste.enums;
+package com.CLPayment.enums;
 
 public enum TransactionType {
     CREATE_TOURNAMENT(false),

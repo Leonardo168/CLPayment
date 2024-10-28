@@ -1,4 +1,4 @@
-package webClient.mercadoPago.teste.dto;
+package com.CLPayment.dto;
 
 public record PreferenceRecordDTO(ItemRecordDTO[] items, BackUrlRecordDTO back_urls, String notification_url,
 				   String external_reference, Boolean expires, String expiration_date_from, String expiration_date_to,

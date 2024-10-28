@@ -1,4 +1,4 @@
-package webClient.mercadoPago.teste.controller;
+package com.CLPayment.controller;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -15,15 +15,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.CLPayment.dto.BackUrlRecordDTO;
+import com.CLPayment.dto.ItemRecordDTO;
+import com.CLPayment.dto.PreferenceRecordDTO;
+import com.CLPayment.enums.TransactionStatus;
+import com.CLPayment.enums.TransactionType;
+import com.CLPayment.model.TransactionModel;
+import com.CLPayment.service.PreferenceService;
+import com.CLPayment.service.TransactionService;
+
 import reactor.core.publisher.Mono;
-import webClient.mercadoPago.teste.dto.BackUrlRecordDTO;
-import webClient.mercadoPago.teste.dto.ItemRecordDTO;
-import webClient.mercadoPago.teste.dto.PreferenceRecordDTO;
-import webClient.mercadoPago.teste.enums.TransactionStatus;
-import webClient.mercadoPago.teste.enums.TransactionType;
-import webClient.mercadoPago.teste.model.TransactionModel;
-import webClient.mercadoPago.teste.service.PreferenceService;
-import webClient.mercadoPago.teste.service.TransactionService;
 
 @RestController
 @RequestMapping("/buychips")
