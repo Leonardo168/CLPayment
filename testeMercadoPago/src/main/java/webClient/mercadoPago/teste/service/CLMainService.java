@@ -12,21 +12,25 @@ public class CLMainService {
 
     @Value("${MP.webhook}")
     String webhook;
-    
+
     private WebClient webClient;
 
     public CLMainService(WebClient.Builder builder) {
 	webClient = builder.build();
     }
-    
+
     @PostConstruct
     public void init() {
-        webClient = webClient.mutate().baseUrl(webhook).build();
+	webClient = webClient.mutate().baseUrl(webhook).build();
     }
 
-    public Mono<Void> confirmPurchase(String transaction_id) {
+    public Mono<Void> confirmPurchase(String transaction_id, String xSignature, String xRequestId) {
 	return webClient.post()
 			.uri("/{id}/process", transaction_id)
+			.headers(h -> {
+			    h.set("x-signature", xSignature);
+			    h.set("x-request-id", xRequestId);
+			})
 			.retrieve()
 			.bodyToMono(Void.class);
     }

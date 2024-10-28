@@ -9,11 +9,13 @@ import java.util.UUID;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import reactor.core.publisher.Mono;
@@ -23,6 +25,7 @@ import webClient.mercadoPago.teste.model.TransactionModel;
 import webClient.mercadoPago.teste.service.CLMainService;
 import webClient.mercadoPago.teste.service.PaymentService;
 import webClient.mercadoPago.teste.service.PreferenceService;
+import webClient.mercadoPago.teste.service.RequestSignatureService;
 import webClient.mercadoPago.teste.service.TransactionService;
 
 @RestController
@@ -30,6 +33,9 @@ import webClient.mercadoPago.teste.service.TransactionService;
 public class PaymentController {
     @Autowired
     CLMainService clMainService;
+    
+    @Autowired
+    RequestSignatureService testeAssinaturaService;
     
     @Autowired
     TransactionService transactionService;
@@ -44,12 +50,20 @@ public class PaymentController {
     ZoneId brTimeZone = ZoneId.of("America/Sao_Paulo");
     
     @PostMapping("/notification")
-    @ResponseStatus(HttpStatus.OK)
-    public void confirmarPagamento(@RequestBody Map<String, Object> dados) {
+    public ResponseEntity<Object> confirmarPagamento(@RequestHeader HttpHeaders headers, @RequestBody Map<String, Object> dados) {
 	@SuppressWarnings("unchecked")
 	Map<String, Object> data = (Map<String, Object>) dados.get("data");
 	String payment_id = (String) data.get("id");
 
+	String xSignature = headers.getFirst("x-signature");
+        String xRequestId = headers.getFirst("x-request-id");
+	
+        boolean isValid = testeAssinaturaService.validateRequest(xSignature, xRequestId, payment_id);
+        
+        if (!isValid) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+	}
+        
 	System.out.println("\n----------------------------------------------------------------------------------------------------------------");
 	System.out.println("Id do pagamento: " + payment_id);
 	System.out.println("----------------------------------------------------------------------------------------------------------------");
@@ -88,10 +102,12 @@ public class PaymentController {
 		    System.out.println("Preferência " + transaction.getPreference_id_mp() + " atualizada");
 		    System.out.println("----------------------------------------------------------------------------------------------------------------");
 		    
-		    clMainService.confirmPurchase(transaction_id.toString()).subscribe();
+		    clMainService.confirmPurchase(transaction_id.toString(), xSignature, xRequestId).subscribe();
 		}
 	    }
 	});
+	
+	return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
 }
