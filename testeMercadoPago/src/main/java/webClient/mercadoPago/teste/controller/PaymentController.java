@@ -35,7 +35,7 @@ public class PaymentController {
     CLMainService clMainService;
     
     @Autowired
-    RequestSignatureService testeAssinaturaService;
+    RequestSignatureService requestSignatureService;
     
     @Autowired
     TransactionService transactionService;
@@ -58,7 +58,7 @@ public class PaymentController {
 	String xSignature = headers.getFirst("x-signature");
         String xRequestId = headers.getFirst("x-request-id");
 	
-        boolean isValid = testeAssinaturaService.validateRequest(xSignature, xRequestId, payment_id);
+        boolean isValid = requestSignatureService.validateMpRequest(xSignature, xRequestId, payment_id);
         
         if (!isValid) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
@@ -102,7 +102,11 @@ public class PaymentController {
 		    System.out.println("Preferência " + transaction.getPreference_id_mp() + " atualizada");
 		    System.out.println("----------------------------------------------------------------------------------------------------------------");
 		    
-		    clMainService.confirmPurchase(transaction_id.toString(), xSignature, xRequestId).subscribe();
+		    String generatedRequestId = UUID.randomUUID().toString();
+		    String transaction_idString = transaction_id.toString();
+		    String generatedSignature = requestSignatureService.generateSignature(generatedRequestId, transaction_idString);
+		    
+		    clMainService.confirmPurchase(transaction_idString, generatedSignature, generatedRequestId).subscribe();
 		}
 	    }
 	});
