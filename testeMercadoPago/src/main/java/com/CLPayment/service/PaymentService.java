@@ -12,19 +12,19 @@ import reactor.core.publisher.Mono;
 public class PaymentService {
     @Value("${MP.AccessToken}")
     private String mpAccessToken;
-    
-    private final WebClient webClient;
-    
-    public PaymentService(WebClient.Builder builder) {
-	webClient = builder.baseUrl("https://api.mercadopago.com/v1/payments").build();
+
+    private final WebClient paymentWebClient;
+
+    public PaymentService(WebClient paymentWebClient) {
+	this.paymentWebClient = paymentWebClient;
     }
-    
-    public Mono<PaymentRecordDTO> findById(String payment_id){
-	return webClient.get()
-		.uri("/{id}", payment_id)
-		.headers(h -> h.setBearerAuth(mpAccessToken))
-		.retrieve()
-		.bodyToMono(PaymentRecordDTO.class);
+
+    public Mono<PaymentRecordDTO> findById(String payment_id) {
+	return paymentWebClient.get()
+			       .uri("/{id}", payment_id)
+			       .headers(h -> h.setBearerAuth(mpAccessToken))
+			       .retrieve()
+			       .bodyToMono(PaymentRecordDTO.class);
     }
 
 }

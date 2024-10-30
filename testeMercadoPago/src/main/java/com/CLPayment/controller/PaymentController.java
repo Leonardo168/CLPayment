@@ -30,7 +30,7 @@ import com.CLPayment.service.TransactionService;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping("/pagamento")
+@RequestMapping("/payment")
 public class PaymentController {
     @Autowired
     CLMainService clMainService;
