@@ -36,7 +36,7 @@ public class PreferenceController {
     @Autowired
     TransactionService transactionService;
 
-    @Value("${MP.webhook}")
+    @Value("${webhook}")
     String webhook;
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX");

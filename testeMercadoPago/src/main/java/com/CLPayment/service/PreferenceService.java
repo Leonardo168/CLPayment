@@ -1,6 +1,5 @@
 package com.CLPayment.service;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -11,9 +10,6 @@ import reactor.core.publisher.Mono;
 @Service
 public class PreferenceService {
 
-    @Value("${MP.AccessToken}")
-    private String mpAccessToken;
-
     private final WebClient preferenceWebClient;
 
     public PreferenceService(WebClient preferenceWebClient) {
@@ -23,14 +19,12 @@ public class PreferenceService {
     public Mono<PreferenceRecordDTO> findById(String id) {
 	return preferenceWebClient.get()
 				  .uri("/{id}", id)
-				  .headers(h -> h.setBearerAuth(mpAccessToken))
 				  .retrieve()
 				  .bodyToMono(PreferenceRecordDTO.class);
     }
 
     public Mono<PreferenceRecordDTO> create(PreferenceRecordDTO preferenceRecordDTO) {
 	return preferenceWebClient.post()
-				  .headers(h -> h.setBearerAuth(mpAccessToken))
 				  .bodyValue(preferenceRecordDTO)
 				  .retrieve()
 				  .bodyToMono(PreferenceRecordDTO.class);
@@ -49,7 +43,6 @@ public class PreferenceService {
 
 	    return preferenceWebClient.put()
 				      .uri("/{id}", id)
-				      .headers(h -> h.setBearerAuth(mpAccessToken))
 				      .bodyValue(preferenceUpdate)
 				      .retrieve()
 				      .bodyToMono(Void.class);
