@@ -43,11 +43,11 @@ public class PreferenceController {
     ZoneId brTimeZone = ZoneId.of("America/Sao_Paulo");
 
     @PostMapping
-    public ResponseEntity<Mono<PreferenceRecordDTO>> createPreference(@RequestBody Map<String, Object> data) {
+    public ResponseEntity<Mono<Object>> createPreference(@RequestBody Map<String, Object> data) {
 
 	LocalDateTime creation_date = LocalDateTime.now();
 	LocalDateTime expiration_date = LocalDateTime.now().plusDays(7);
-	
+
 	UUID transaction_id = UUID.randomUUID();
 
 	String inventory_id = (String) data.get("inventory_id");
@@ -68,25 +68,36 @@ public class PreferenceController {
 								    webhook + "?source_news=webhooks",
 								    inventory_id,
 								    creation_date.atZone(brTimeZone).format(formatter),
-								    expiration_date.atZone(brTimeZone).format(formatter));
+								    expiration_date.atZone(brTimeZone)
+										   .format(formatter));
 
-	Mono<PreferenceRecordDTO> preference = preferenceService.create(preferenceObj);
-	preference.subscribe(pr -> {
-	    TransactionModel transaction = new TransactionModel(transaction_id, TransactionType.BUY_CHIPS,
-								TransactionStatus.pending, UUID.fromString(inventory_id),
-								item.quantity(), pr.id(), creation_date, creation_date,
-								expiration_date);
+	Mono<PreferenceRecordDTO> preferenceMono = preferenceService.create(preferenceObj)
+								    .flatMap(pr -> {
+									TransactionModel transaction = new TransactionModel(
+															    transaction_id,
+															    TransactionType.BUY_CHIPS,
+															    TransactionStatus.pending,
+															    UUID.fromString(inventory_id),
+															    item.quantity(),
+															    pr.id(),
+															    creation_date,
+															    creation_date,
+															    expiration_date);
 
-	    transactionService.save(transaction);
+									return Mono.fromRunnable(() -> transactionService.save(transaction))
+										   .thenReturn(pr);
+								    })
+								    .onErrorResume(e -> {
+									return Mono.just(new PreferenceRecordDTO("Erro ao criar a preferência"));
+								    });
 
-	    System.out.println("\n----------------------------------------------------------------------------------------------------------------");
-	    System.out.println("ID do pedido: " + transaction.getTransaction_id());
-	    System.out.println("URL para notificação: " + webhook);
-	    System.out.println("init_point: " + pr.init_point());
-	    System.out.println("sandbox_init_point: " + pr.sandbox_init_point());
-	    System.out.println("----------------------------------------------------------------------------------------------------------------\n");
-	});
-
-	return ResponseEntity.status(HttpStatus.OK).body(preference);
+	return ResponseEntity.ok(preferenceMono
+					       .map(preference -> {
+						   if (preference.id() == null) {
+						       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+									    .body(preference);
+						   }
+						   return ResponseEntity.ok(preference);
+					       }));
     }
 }

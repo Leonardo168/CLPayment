@@ -10,4 +10,8 @@ public record PreferenceRecordDTO(ItemRecordDTO[] items, BackUrlRecordDTO back_u
 	this(itemRecordDTOs, backUrlRecordDTO, notification_url, external_reference, true, expiration_date_from,
 	     expiration_date_to, null, null, null);
     }
+    
+    public PreferenceRecordDTO(String erro) {
+	this(null, null, null, null, null, null, null, null, erro, erro);
+    }
 }
