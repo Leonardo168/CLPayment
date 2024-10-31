@@ -66,5 +66,21 @@ public class TransactionModel implements Serializable {
 	this.update_date = update_date;
 	this.expiration_date = expiration_date;
     }
+    
+    public TransactionModel(UUID transaction_id, TransactionType type, TransactionStatus status, UUID inventory_id,
+			    int chips_qty, LocalDateTime creation_date,
+			    LocalDateTime update_date, LocalDateTime expiration_date) {
+	this.transaction_id = transaction_id;
+	this.type = type;
+	this.status = status;
+	this.inventory_id = inventory_id;
+	this.chips_qty = chips_qty;
+	this.tournment_id_riot = null;
+	this.preference_id_mp = null;
+	this.payment_id_mp = null;
+	this.creation_date = creation_date;
+	this.update_date = update_date;
+	this.expiration_date = expiration_date;
+    }
 
 }
