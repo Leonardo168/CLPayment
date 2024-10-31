@@ -21,13 +21,7 @@ public class WebClientConfig {
     private String mpAccessToken;
 
     @Value("${webhook}")
-    String webhook;
-
-    @Value("${Efi.username}")
-    String username;
-
-    @Value("${Efi.password}")
-    String password;
+    private String webhook;
 
     @Bean
     WebClient preferenceWebClient() {
@@ -88,7 +82,6 @@ public class WebClientConfig {
 
 	return WebClient.builder()
 			.baseUrl("https://pix-h.api.efipay.com.br") // Base URL para o WebClient seguro
-			.defaultHeaders(headers -> headers.setBasicAuth(username, password))
 			.clientConnector(new ReactorClientHttpConnector(httpClient))
 			.build();
     }

@@ -1,4 +1,4 @@
-package com.CLPayment.dto;
+package com.CLPayment.dto.MP;
 
 import java.util.List;
 

@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.CLPayment.dto.PaymentRecordDTO;
+import com.CLPayment.dto.MP.PaymentRecordDTO;
 import com.CLPayment.enums.TransactionStatus;
 import com.CLPayment.model.TransactionModel;
 import com.CLPayment.service.CLMainService;

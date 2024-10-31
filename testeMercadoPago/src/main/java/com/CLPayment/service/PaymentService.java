@@ -3,7 +3,7 @@ package com.CLPayment.service;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import com.CLPayment.dto.PaymentRecordDTO;
+import com.CLPayment.dto.MP.PaymentRecordDTO;
 
 import reactor.core.publisher.Mono;
 

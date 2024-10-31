@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.CLPayment.dto.BackUrlRecordDTO;
-import com.CLPayment.dto.ItemRecordDTO;
-import com.CLPayment.dto.PreferenceRecordDTO;
+import com.CLPayment.dto.MP.BackUrlRecordDTO;
+import com.CLPayment.dto.MP.ItemRecordDTO;
+import com.CLPayment.dto.MP.PreferenceRecordDTO;
 import com.CLPayment.enums.TransactionStatus;
 import com.CLPayment.enums.TransactionType;
 import com.CLPayment.model.TransactionModel;
