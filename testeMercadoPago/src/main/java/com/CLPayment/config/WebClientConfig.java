@@ -20,7 +20,7 @@ public class WebClientConfig {
     @Value("${MP.AccessToken}")
     private String mpAccessToken;
 
-    @Value("${webhook}")
+    @Value("${CL.webhook}")
     private String webhook;
 
     @Bean
