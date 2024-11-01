@@ -74,10 +74,10 @@ public class PreferenceController {
 	Mono<PreferenceRecordDTO> preferenceMono = preferenceService.create(preferenceObj)
 								    .flatMap(pr -> {
 									TransactionModel transaction = new TransactionModel(
-															    transaction_id,
+															    transaction_id.toString(),
 															    TransactionType.BUY_CHIPS,
 															    TransactionStatus.pending,
-															    UUID.fromString(inventory_id),
+															    inventory_id,
 															    item.quantity(),
 															    pr.id(),
 															    creation_date,

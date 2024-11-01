@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,7 +24,6 @@ import com.CLPayment.service.EfiService;
 import com.CLPayment.service.TransactionService;
 
 import reactor.core.publisher.Mono;
-import org.springframework.web.bind.annotation.PostMapping;
 
 @RestController
 @RequestMapping("/withdraw")
@@ -55,9 +55,9 @@ public class EfiController {
 
 	UUID transaction_id = UUID.randomUUID();
 
-	TransactionModel transactionModel = new TransactionModel(transaction_id, TransactionType.SELL_CHIPS,
+	TransactionModel transactionModel = new TransactionModel(transaction_id.toString(), TransactionType.SELL_CHIPS,
 								 TransactionStatus.pending,
-								 UUID.fromString(inventory_id), chips_qty,
+								 inventory_id, chips_qty,
 								 creation_date, creation_date,
 								 expiration_date);
 	

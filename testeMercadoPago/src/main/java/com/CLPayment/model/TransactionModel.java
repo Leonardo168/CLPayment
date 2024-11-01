@@ -2,7 +2,6 @@ package com.CLPayment.model;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 import com.CLPayment.enums.TransactionStatus;
 import com.CLPayment.enums.TransactionType;
@@ -27,7 +26,7 @@ public class TransactionModel implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    private UUID transaction_id;
+    private String transaction_id;
     @Column
     @Enumerated(EnumType.STRING)
     private TransactionType type;
@@ -35,7 +34,7 @@ public class TransactionModel implements Serializable {
     @Enumerated(EnumType.STRING)
     private TransactionStatus status;
     @Column
-    private UUID inventory_id;
+    private String inventory_id;
     @Column
     private int chips_qty;
     @Column
@@ -51,7 +50,7 @@ public class TransactionModel implements Serializable {
     @Column
     private LocalDateTime expiration_date;
 
-    public TransactionModel(UUID transaction_id, TransactionType type, TransactionStatus status, UUID inventory_id,
+    public TransactionModel(String transaction_id, TransactionType type, TransactionStatus status, String inventory_id,
 			    int chips_qty, String preference_id_mp, LocalDateTime creation_date,
 			    LocalDateTime update_date, LocalDateTime expiration_date) {
 	this.transaction_id = transaction_id;
@@ -67,7 +66,7 @@ public class TransactionModel implements Serializable {
 	this.expiration_date = expiration_date;
     }
     
-    public TransactionModel(UUID transaction_id, TransactionType type, TransactionStatus status, UUID inventory_id,
+    public TransactionModel(String transaction_id, TransactionType type, TransactionStatus status, String inventory_id,
 			    int chips_qty, LocalDateTime creation_date,
 			    LocalDateTime update_date, LocalDateTime expiration_date) {
 	this.transaction_id = transaction_id;

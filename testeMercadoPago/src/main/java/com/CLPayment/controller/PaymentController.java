@@ -80,7 +80,7 @@ public class PaymentController {
 	    System.out.println("Valor: " + pg.transaction_amount());
 	    System.out.println("----------------------------------------------------------------------------------------------------------------");
 
-	    Optional<TransactionModel> transactionOptional = transactionService.findById(UUID.fromString(transaction_id));
+	    Optional<TransactionModel> transactionOptional = transactionService.findById(transaction_id);
 	    if (!transactionOptional.isPresent()) {
 		System.out.println("Transação " + transaction_id + " não encontrada");
 	    } else {
