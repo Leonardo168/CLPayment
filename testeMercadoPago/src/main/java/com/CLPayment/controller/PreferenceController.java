@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.CLPayment.dto.MP.BackUrlRecordDTO;
 import com.CLPayment.dto.MP.ItemRecordDTO;
 import com.CLPayment.dto.MP.PreferenceRecordDTO;
 import com.CLPayment.enums.TransactionStatus;
@@ -62,7 +61,7 @@ public class PreferenceController {
 								    new ItemRecordDTO[] {
 											  item
 								    },
-								    new BackUrlRecordDTO("https://www.dicio.com.br/sucesso/",
+								    new PreferenceRecordDTO.BackUrlRecordDTO("https://www.dicio.com.br/sucesso/",
 											 "https://www.dicio.com.br/pendente/",
 											 "https://www.dicio.com.br/falha/"),
 								    webhook + "?source_news=webhooks",

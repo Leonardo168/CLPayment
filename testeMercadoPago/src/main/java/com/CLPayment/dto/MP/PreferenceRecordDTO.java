@@ -14,4 +14,6 @@ public record PreferenceRecordDTO(ItemRecordDTO[] items, BackUrlRecordDTO back_u
     public PreferenceRecordDTO(String erro) {
 	this(null, null, null, null, null, null, null, null, erro, erro);
     }
+    
+    public record BackUrlRecordDTO(String success, String pending, String failure) {}
 }

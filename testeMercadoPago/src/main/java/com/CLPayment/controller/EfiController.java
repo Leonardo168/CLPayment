@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.CLPayment.dto.Efi.FavorecidoRecordDTO;
-import com.CLPayment.dto.Efi.PagadorRecordDTO;
 import com.CLPayment.dto.Efi.PixRecordDTO;
 import com.CLPayment.enums.TransactionStatus;
 import com.CLPayment.enums.TransactionType;
@@ -61,8 +59,8 @@ public class EfiController {
 	LocalDateTime expiration_date = LocalDateTime.now().plusDays(7);
 
 	PixRecordDTO pixRecordDTO = new PixRecordDTO(String.format(Locale.US, "%.2f", (float) chips_qty * unit_price),
-						     new PagadorRecordDTO(efi_chave, "Resgate de fichas Common League"),
-						     new FavorecidoRecordDTO(chave));
+						     new PixRecordDTO.PagadorRecordDTO(efi_chave, "Resgate de fichas Common League"),
+						     new PixRecordDTO.FavorecidoRecordDTO(chave));
 
 	UUID transaction_id = UUID.randomUUID();
 
