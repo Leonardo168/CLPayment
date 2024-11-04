@@ -14,7 +14,7 @@ public class CLMainService {
 	this.cLMainService = cLMainService;
     }
 
-    public Mono<Void> confirmPurchase(String transaction_id, String xSignature, String xRequestId) {
+    public Mono<Void> process(String transaction_id, String xSignature, String xRequestId) {
 	return cLMainService.post()
 			    .uri("/{id}/process", transaction_id)
 			    .headers(h -> {

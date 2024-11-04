@@ -43,20 +43,20 @@ public class PreferenceController {
     ZoneId brTimeZone = ZoneId.of("America/Sao_Paulo");
 
     @PostMapping
-    public ResponseEntity<Mono<Object>> createPreference(@RequestBody Map<String, Object> data) {
+    public ResponseEntity<Mono<Object>> createPreference(@RequestBody Map<String, Object> json) {
 
 	LocalDateTime creation_date = LocalDateTime.now();
 	LocalDateTime expiration_date = LocalDateTime.now().plusDays(7);
 
 	UUID transaction_id = UUID.randomUUID();
 
-	String inventory_id = (String) data.get("inventory_id");
+	String inventory_id = (String) json.get("inventory_id");
 
 	ItemRecordDTO item = new ItemRecordDTO(transaction_id.toString(),
-					       (String) data.get("title"),
-					       (Integer) data.get("chips_qty"),
+					       (String) json.get("title"),
+					       (Integer) json.get("chips_qty"),
 					       "BRL",
-					       (Integer) data.get("unit_price"));
+					       (Integer) json.get("unit_price"));
 
 	PreferenceRecordDTO preferenceObj = new PreferenceRecordDTO(
 								    new ItemRecordDTO[] {

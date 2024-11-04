@@ -51,9 +51,9 @@ public class PaymentController {
     ZoneId brTimeZone = ZoneId.of("America/Sao_Paulo");
     
     @PostMapping("/notification")
-    public ResponseEntity<Object> confirmarPagamento(@RequestHeader HttpHeaders headers, @RequestBody Map<String, Object> dados) {
+    public ResponseEntity<Object> confirmarPagamento(@RequestHeader HttpHeaders headers, @RequestBody Map<String, Object> json) {
 	@SuppressWarnings("unchecked")
-	Map<String, Object> data = (Map<String, Object>) dados.get("data");
+	Map<String, Object> data = (Map<String, Object>) json.get("data");
 	String payment_id = (String) data.get("id");
 
 	String xSignature = headers.getFirst("x-signature");
@@ -64,21 +64,10 @@ public class PaymentController {
         if (!isValid) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
 	}
-        
-	System.out.println("\n----------------------------------------------------------------------------------------------------------------");
-	System.out.println("Id do pagamento: " + payment_id);
-	System.out.println("----------------------------------------------------------------------------------------------------------------");
 
 	Mono<PaymentRecordDTO> pagamento = paymentService.findById(payment_id);
 	pagamento.subscribe(pg -> {
 	    String transaction_id = pg.additional_info().items().get(0).id();
-
-	    System.out.println("\n----------------------------------------------------------------------------------------------------------------");
-	    System.out.println("Id da transação: " + transaction_id);
-	    System.out.println("Status: " + pg.status());
-	    System.out.println("Id do inventário: " + pg.external_reference());
-	    System.out.println("Valor: " + pg.transaction_amount());
-	    System.out.println("----------------------------------------------------------------------------------------------------------------");
 
 	    Optional<TransactionModel> transactionOptional = transactionService.findById(transaction_id);
 	    if (!transactionOptional.isPresent()) {
@@ -93,21 +82,14 @@ public class PaymentController {
 		
 		transactionService.save(transaction);
 
-		System.out.println("\n----------------------------------------------------------------------------------------------------------------");
-		System.out.println("Pedido " + transaction_id + " atualizado");
-		System.out.println("----------------------------------------------------------------------------------------------------------------");
-
 		if (transaction.getStatus() == TransactionStatus.approved) {
 		    preferenciaService.update(transaction.getPreference_id_mp(), update_date.atZone(brTimeZone).format(formatter)).subscribe();
-		    System.out.println("\n----------------------------------------------------------------------------------------------------------------");
-		    System.out.println("Preferência " + transaction.getPreference_id_mp() + " atualizada");
-		    System.out.println("----------------------------------------------------------------------------------------------------------------");
-		    
+
 		    String generatedRequestId = UUID.randomUUID().toString();
 		    String transaction_idString = transaction_id.toString();
 		    String generatedSignature = requestSignatureService.generateSignature(generatedRequestId, transaction_idString);
 		    
-		    clMainService.confirmPurchase(transaction_idString, generatedSignature, generatedRequestId).subscribe();
+		    clMainService.process(transaction_idString, generatedSignature, generatedRequestId).subscribe();
 		}
 	    }
 	});

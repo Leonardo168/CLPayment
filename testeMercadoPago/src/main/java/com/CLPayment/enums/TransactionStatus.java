@@ -12,6 +12,19 @@ public enum TransactionStatus {
     charged_back;
     
     public static TransactionStatus fromString(String status) {
-	return TransactionStatus.valueOf(status);
+	switch (status) {
+	case "EM_PROCESSAMENTO":
+            return in_process;
+        case "REALIZADO":
+            return approved;
+        case "NAO_REALIZADO":
+            return rejected;
+	default:
+	    try {
+                return TransactionStatus.valueOf(status);
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("Status inválido: " + status);
+            }
+	}
     }
 }
