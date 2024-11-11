@@ -64,7 +64,7 @@ public class PaymentController {
         if (!isValid) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
 	}
-
+        
 	Mono<PaymentRecordDTO> pagamento = paymentService.findById(payment_id);
 	pagamento.subscribe(pg -> {
 	    String transaction_id = pg.additional_info().items().get(0).id();

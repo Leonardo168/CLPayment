@@ -8,10 +8,12 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,6 +23,7 @@ import com.CLPayment.enums.TransactionStatus;
 import com.CLPayment.enums.TransactionType;
 import com.CLPayment.model.TransactionModel;
 import com.CLPayment.service.PreferenceService;
+import com.CLPayment.service.RequestSignatureService;
 import com.CLPayment.service.TransactionService;
 
 import reactor.core.publisher.Mono;
@@ -34,6 +37,9 @@ public class PreferenceController {
 
     @Autowired
     TransactionService transactionService;
+    
+    @Autowired
+    RequestSignatureService requestSignatureService;
 
     @Value("${MP.webhook}")
     String webhook;
@@ -42,14 +48,20 @@ public class PreferenceController {
     ZoneId brTimeZone = ZoneId.of("America/Sao_Paulo");
 
     @PostMapping
-    public ResponseEntity<Mono<Object>> createPreference(@RequestBody Map<String, Object> json) {
+    public ResponseEntity<Mono<Object>> createPreference(@RequestHeader HttpHeaders headers, @RequestBody Map<String, Object> json) {
+	String xSignature = headers.getFirst("x-signature");
+	String xRequestId = headers.getFirst("x-request-id");
+	String inventory_id = (String) json.get("inventory_id");
+	
+	boolean isValid = requestSignatureService.validateClRequest(xSignature, xRequestId, inventory_id);
+	if (!isValid) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+	}
 
 	LocalDateTime creation_date = LocalDateTime.now();
 	LocalDateTime expiration_date = LocalDateTime.now().plusDays(7);
 
 	UUID transaction_id = UUID.randomUUID();
-
-	String inventory_id = (String) json.get("inventory_id");
 
 	ItemRecordDTO item = new ItemRecordDTO(transaction_id.toString(),
 					       (String) json.get("title"),

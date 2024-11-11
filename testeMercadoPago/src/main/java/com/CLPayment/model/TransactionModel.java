@@ -17,7 +17,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "transactions")
+@Table(name = "transactions_p2")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,6 +26,7 @@ public class TransactionModel implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
+    @Column(length = 36)
     private String transaction_id;
     @Column
     @Enumerated(EnumType.STRING)
@@ -33,12 +34,12 @@ public class TransactionModel implements Serializable {
     @Column
     @Enumerated(EnumType.STRING)
     private TransactionStatus status;
-    @Column
+    @Column(length = 36)
     private String inventory_id;
     @Column
     private int chips_qty;
     @Column
-    private String tournment_id_riot;
+    private String tournment_id_riot; //tournment_id
     @Column
     private String preference_id_mp;
     @Column

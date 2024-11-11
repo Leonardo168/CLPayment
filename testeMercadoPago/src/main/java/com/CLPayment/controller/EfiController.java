@@ -10,10 +10,12 @@ import java.util.UUID;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -48,9 +50,16 @@ public class EfiController {
     RequestSignatureService requestSignatureService;
 
     @PostMapping
-    public Mono<ResponseEntity<Object>> sendPix(@RequestBody Map<String, Object> json) {
-
+    public Mono<ResponseEntity<Object>> sendPix(@RequestHeader HttpHeaders headers, @RequestBody Map<String, Object> json) {
+	String xSignature = headers.getFirst("x-signature");
+	String xRequestId = headers.getFirst("x-request-id");
 	String inventory_id = (String) json.get("inventory_id");
+	
+	boolean isValid = requestSignatureService.validateClRequest(xSignature, xRequestId, inventory_id);
+	if (!isValid) {
+            return Mono.just(ResponseEntity.status(HttpStatus.FORBIDDEN).body(null));
+	}
+	
 	String chave = (String) json.get("chave_pix");
 	int chips_qty = (Integer) json.get("chips_qty");
 	int unit_price = (Integer) json.get("unit_price");
