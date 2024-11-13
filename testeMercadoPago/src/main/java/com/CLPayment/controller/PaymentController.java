@@ -69,7 +69,7 @@ public class PaymentController {
 	    return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 					   .body(Mono.just("Erro ao converter JSON para String")));
 	}
-	RequestEntity request = new RequestEntity("/withdraw", RequestMethod.POST, body, LocalDateTime.now());
+	RequestEntity request = new RequestEntity("/payment/notification", RequestMethod.POST, body, LocalDateTime.now());
 
 	@SuppressWarnings("unchecked")
 	Map<String, Object> data = (Map<String, Object>) json.get("data");

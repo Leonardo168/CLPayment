@@ -129,7 +129,7 @@ public class EfiController {
 	    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 				 .body("Erro ao converter JSON para String");
 	}
-	RequestEntity request = new RequestEntity("/withdraw", RequestMethod.POST, body, LocalDateTime.now());
+	RequestEntity request = new RequestEntity("/withdraw/notification", RequestMethod.POST, body, LocalDateTime.now());
 
 	@SuppressWarnings("unchecked")
 	List<Map<String, Object>> pixList = (List<Map<String, Object>>) json.get("pix");

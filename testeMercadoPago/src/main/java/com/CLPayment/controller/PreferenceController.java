@@ -66,7 +66,7 @@ public class PreferenceController {
 	    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 				 .body(Mono.just("Erro ao converter JSON para String"));
 	}
-	RequestEntity request = new RequestEntity("/withdraw", RequestMethod.POST, body, LocalDateTime.now());
+	RequestEntity request = new RequestEntity("/buychips", RequestMethod.POST, body, LocalDateTime.now());
 
 	String xSignature = headers.getFirst("x-signature");
 	String xRequestId = headers.getFirst("x-request-id");
