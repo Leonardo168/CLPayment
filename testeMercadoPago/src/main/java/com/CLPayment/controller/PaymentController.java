@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.CLPayment.dto.MP.PaymentRecordDTO;
 import com.CLPayment.enums.TransactionStatus;
-import com.CLPayment.model.TransactionModel;
+import com.CLPayment.model.TransactionEntity;
 import com.CLPayment.service.CLMainService;
 import com.CLPayment.service.PaymentService;
 import com.CLPayment.service.PreferenceService;
@@ -69,11 +69,11 @@ public class PaymentController {
 	pagamento.subscribe(pg -> {
 	    String transaction_id = pg.additional_info().items().get(0).id();
 
-	    Optional<TransactionModel> transactionOptional = transactionService.findById(transaction_id);
+	    Optional<TransactionEntity> transactionOptional = transactionService.findById(transaction_id);
 	    if (!transactionOptional.isPresent()) {
 		System.out.println("Transação " + transaction_id + " não encontrada");
 	    } else {
-		TransactionModel transaction = new TransactionModel();
+		TransactionEntity transaction = new TransactionEntity();
 		BeanUtils.copyProperties(transactionOptional.get(), transaction);
 		LocalDateTime update_date = LocalDateTime.now();
 		transaction.setPayment_id_mp(payment_id);
@@ -93,7 +93,6 @@ public class PaymentController {
 		}
 	    }
 	});
-	
 	return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 

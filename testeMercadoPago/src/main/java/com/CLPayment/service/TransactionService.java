@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.CLPayment.model.TransactionModel;
+import com.CLPayment.model.TransactionEntity;
 import com.CLPayment.repository.TransactionRepository;
 
 import jakarta.transaction.Transactional;
@@ -17,11 +17,11 @@ public class TransactionService {
     TransactionRepository transactionRepository;
     
     @Transactional
-    public void save(TransactionModel transaction) {
+    public void save(TransactionEntity transaction) {
 	transactionRepository.save(transaction);
     }
     
-    public Optional<TransactionModel> findById(String transaction_id) {
+    public Optional<TransactionEntity> findById(String transaction_id) {
 	return transactionRepository.findById(transaction_id);
     }
 }

@@ -21,8 +21,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TransactionModel implements Serializable {
-
+public class TransactionEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -51,7 +50,7 @@ public class TransactionModel implements Serializable {
     @Column
     private LocalDateTime expiration_date;
 
-    public TransactionModel(String transaction_id, TransactionType type, TransactionStatus status, String inventory_id,
+    public TransactionEntity(String transaction_id, TransactionType type, TransactionStatus status, String inventory_id,
 			    int chips_qty, String preference_id_mp, LocalDateTime creation_date,
 			    LocalDateTime update_date, LocalDateTime expiration_date) {
 	this.transaction_id = transaction_id;
@@ -67,7 +66,7 @@ public class TransactionModel implements Serializable {
 	this.expiration_date = expiration_date;
     }
     
-    public TransactionModel(String transaction_id, TransactionType type, TransactionStatus status, String inventory_id,
+    public TransactionEntity(String transaction_id, TransactionType type, TransactionStatus status, String inventory_id,
 			    int chips_qty, LocalDateTime creation_date,
 			    LocalDateTime update_date, LocalDateTime expiration_date) {
 	this.transaction_id = transaction_id;

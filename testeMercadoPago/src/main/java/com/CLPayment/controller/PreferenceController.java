@@ -21,7 +21,7 @@ import com.CLPayment.dto.MP.ItemRecordDTO;
 import com.CLPayment.dto.MP.PreferenceRecordDTO;
 import com.CLPayment.enums.TransactionStatus;
 import com.CLPayment.enums.TransactionType;
-import com.CLPayment.model.TransactionModel;
+import com.CLPayment.model.TransactionEntity;
 import com.CLPayment.service.PreferenceService;
 import com.CLPayment.service.RequestSignatureService;
 import com.CLPayment.service.TransactionService;
@@ -84,7 +84,7 @@ public class PreferenceController {
 
 	Mono<PreferenceRecordDTO> preferenceMono = preferenceService.create(preferenceObj)
 								    .flatMap(pr -> {
-									TransactionModel transaction = new TransactionModel(
+									TransactionEntity transaction = new TransactionEntity(
 															    transaction_id.toString(),
 															    TransactionType.BUY_CHIPS,
 															    TransactionStatus.pending,

@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.CLPayment.dto.Efi.PixRecordDTO;
 import com.CLPayment.enums.TransactionStatus;
 import com.CLPayment.enums.TransactionType;
-import com.CLPayment.model.TransactionModel;
+import com.CLPayment.model.TransactionEntity;
 import com.CLPayment.service.CLMainService;
 import com.CLPayment.service.EfiService;
 import com.CLPayment.service.RequestSignatureService;
@@ -73,14 +73,14 @@ public class EfiController {
 
 	UUID transaction_id = UUID.randomUUID();
 
-	TransactionModel transactionModel = new TransactionModel(transaction_id.toString(), TransactionType.SELL_CHIPS,
+	TransactionEntity transactionEntity = new TransactionEntity(transaction_id.toString(), TransactionType.SELL_CHIPS,
 								 TransactionStatus.pending,
 								 inventory_id, chips_qty,
 								 creation_date, creation_date,
 								 expiration_date);
 	
 	return efiService.sendPix(pixRecordDTO, transaction_id)
-                .then(Mono.fromRunnable(() -> transactionService.save(transactionModel)))
+                .then(Mono.fromRunnable(() -> transactionService.save(transactionEntity)))
                 .then(Mono.just(ResponseEntity.ok().build()))
                 .onErrorReturn(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Erro ao enviar PIX"));
@@ -101,11 +101,12 @@ public class EfiController {
 	    String idEnvio = (String) gnExtras.get("idEnvio");
 	    String transaction_id = formatAsUUID(idEnvio);
 	    
-	    Optional<TransactionModel> transactionOptional = transactionService.findById(transaction_id);
+	    Optional<TransactionEntity> transactionOptional = transactionService.findById(transaction_id);
 	    if (!transactionOptional.isPresent()) {
 		System.out.println("Transação " + transaction_id + " não encontrada");
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
 	    } else {
-		TransactionModel transaction = new TransactionModel();
+		TransactionEntity transaction = new TransactionEntity();
 		BeanUtils.copyProperties(transactionOptional.get(), transaction);
 		LocalDateTime update_date = LocalDateTime.now();
 		transaction.setUpdate_date(update_date);
