@@ -9,10 +9,10 @@
 		<version>3.3.4</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>webClient.mercadoPago</groupId>
-	<artifactId>testeMercadoPago</artifactId>
+	<groupId>com.CLPayment</groupId>
+	<artifactId>CLPayment</artifactId>
 	<version>teste</version>
-	<name>testeMercadoPago</name>
+	<name>CLPayment</name>
 	<description>teste</description>
 	<url />
 	<licenses>
