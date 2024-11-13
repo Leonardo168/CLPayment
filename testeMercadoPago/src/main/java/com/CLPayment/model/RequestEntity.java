@@ -26,7 +26,7 @@ public class RequestEntity implements Serializable {
     
     @Id
     @Column(length = 36)
-    private String id;
+    private String request_id;
     @Column()
     private String endpoint;
     @Column(nullable = false)
@@ -40,14 +40,17 @@ public class RequestEntity implements Serializable {
     private LocalDateTime responseDate;
     @Column(length = 1000)
     private String response;
+    @Column
+    private LocalDateTime creation_date;
 
-    public RequestEntity(String endpoint, RequestMethod method, String body, int httpStatus, LocalDateTime responseDate) {
-	this.id = UUID.randomUUID().toString();
+    public RequestEntity(String endpoint, RequestMethod method, String body, LocalDateTime creation_date) {
+	this.request_id = UUID.randomUUID().toString();
 	this.endpoint = endpoint;
 	this.method = method;
 	this.body = body;
-	this.httpStatus = httpStatus;
-	this.responseDate = responseDate;
+	this.httpStatus = 0;
+	this.responseDate = null;
 	this.response = null;
+	this.creation_date = creation_date;
     }
 }
