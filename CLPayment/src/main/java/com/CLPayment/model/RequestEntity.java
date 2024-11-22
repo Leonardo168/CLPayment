@@ -27,12 +27,12 @@ public class RequestEntity implements Serializable {
     @Id
     @Column(length = 36)
     private String request_id;
-    @Column()
+    @Column(nullable = false)
     private String endpoint;
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private RequestMethod method;
-    @Column(length = 1000)
+    @Column(length = 3000)
     private String body;
     @Column
     private int httpStatus;
