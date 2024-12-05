@@ -88,7 +88,7 @@ public class EfiController {
 	LocalDateTime creation_date = LocalDateTime.now();
 	LocalDateTime expiration_date = LocalDateTime.now().plusDays(7);
 
-	PixRecordDTO pixRecordDTO = new PixRecordDTO(String.format(Locale.US, "%.2f", (float) chips_qty * unit_price),
+	PixRecordDTO pixRecordDTO = new PixRecordDTO(String.format(Locale.US, "%.2f", (float) chips_qty * (unit_price * 0.9)),
 						     new PixRecordDTO.PagadorRecordDTO(efi_chave,
 										       "Resgate de fichas Common League"),
 						     new PixRecordDTO.FavorecidoRecordDTO(chave));
@@ -119,7 +119,12 @@ public class EfiController {
 			 });
     }
 
-    @PostMapping("/notification")
+	@PostMapping("/notification")
+	public ResponseEntity<Object> configWebhook() {
+		return ResponseEntity.status(HttpStatus.OK).body(null);
+	}
+
+    @PostMapping("/notification/pix")
     public ResponseEntity<Object> confirmPix(@RequestBody Map<String, Object> json) {
 	ObjectMapper objectMapper = new ObjectMapper();
 	String body;
