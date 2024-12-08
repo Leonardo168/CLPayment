@@ -58,85 +58,85 @@ public class PreferenceController {
 
     @PostMapping
     public ResponseEntity<Mono<Object>> createPreference(@RequestHeader HttpHeaders headers,
-							 @RequestBody Map<String, Object> json) {
-	ObjectMapper objectMapper = new ObjectMapper();
-	String body;
-	try {
-	    body = objectMapper.writeValueAsString(json);
-	} catch (JsonProcessingException e) {
-	    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-				 .body(Mono.just("Erro ao converter JSON para String"));
-	}
-	RequestEntity request = new RequestEntity("/buychips", RequestMethod.POST, body, LocalDateTime.now());
+                                                         @RequestBody Map<String, Object> json) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String body;
+        try {
+            body = objectMapper.writeValueAsString(json);
+        } catch (JsonProcessingException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Mono.just("Erro ao converter JSON para String"));
+        }
+        RequestEntity request = new RequestEntity("/buychips", RequestMethod.POST, body, LocalDateTime.now());
 
-	String xSignature = headers.getFirst("x-signature");
-	String xRequestId = headers.getFirst("x-request-id");
-	String inventory_id = (String) json.get("inventory_id");
+        String xSignature = headers.getFirst("x-signature");
+        String xRequestId = headers.getFirst("x-request-id");
+        String inventory_id = (String) json.get("inventory_id");
 
-	boolean isValid = requestSignatureService.validateClRequest(xSignature, xRequestId, inventory_id);
-	if (!isValid) {
-	    request.setHttpStatus(403);
-	    requestService.save(request);
-	    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
-	}
+        boolean isValid = requestSignatureService.validateClRequest(xSignature, xRequestId, inventory_id);
+        if (!isValid) {
+            request.setHttpStatus(403);
+            requestService.save(request);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+        }
 
-	LocalDateTime creation_date = LocalDateTime.now();
-	LocalDateTime expiration_date = LocalDateTime.now().plusDays(7);
+        LocalDateTime creation_date = LocalDateTime.now();
+        LocalDateTime expiration_date = LocalDateTime.now().plusDays(7);
 
-	UUID transaction_id = UUID.randomUUID();
+        UUID transaction_id = UUID.randomUUID();
 
-	ItemRecordDTO item = new ItemRecordDTO(transaction_id.toString(),
-					       (String) json.get("title"),
-					       (Integer) json.get("chips_qty"),
-					       "BRL",
-					       (Integer) json.get("unit_price"));
+        ItemRecordDTO item = new ItemRecordDTO(transaction_id.toString(),
+                (String) json.get("title"),
+                (Integer) json.get("chips_qty"),
+                "BRL",
+                (Integer) json.get("unit_price"));
 
-	PreferenceRecordDTO preferenceObj = new PreferenceRecordDTO(
-								    new ItemRecordDTO[] {
-											  item
-								    },
-								    new PreferenceRecordDTO.BackUrlRecordDTO("https://www.dicio.com.br/sucesso/",
-													     "https://www.dicio.com.br/pendente/",
-													     "https://www.dicio.com.br/falha/"),
-								    webhook + "?source_news=webhooks",
-								    inventory_id,
-								    creation_date.atZone(brTimeZone).format(formatter),
-								    expiration_date.atZone(brTimeZone)
-										   .format(formatter));
+        PreferenceRecordDTO preferenceObj = new PreferenceRecordDTO(
+                new ItemRecordDTO[]{
+                        item
+                },
+                new PreferenceRecordDTO.BackUrlRecordDTO("https://www.commonleague.online/?status=accepted",
+                        "https://www.commonleague.online/?status=pending",
+                        "https://www.commonleague.online/?status=denied"),
+                webhook + "?source_news=webhooks",
+                inventory_id,
+                creation_date.atZone(brTimeZone).format(formatter),
+                expiration_date.atZone(brTimeZone)
+                        .format(formatter));
 
-	Mono<PreferenceRecordDTO> preferenceMono = preferenceService.create(preferenceObj)
-								    .flatMap(pr -> {
-									TransactionEntity transaction = new TransactionEntity(
-															      transaction_id.toString(),
-															      TransactionType.BUY_CHIPS,
-															      TransactionStatus.pending,
-															      inventory_id,
-															      item.quantity(),
-															      pr.id(),
-															      creation_date,
-															      creation_date,
-															      expiration_date);
+        Mono<PreferenceRecordDTO> preferenceMono = preferenceService.create(preferenceObj)
+                .flatMap(pr -> {
+                    TransactionEntity transaction = new TransactionEntity(
+                            transaction_id.toString(),
+                            TransactionType.BUY_CHIPS,
+                            TransactionStatus.pending,
+                            inventory_id,
+                            item.quantity(),
+                            pr.id(),
+                            creation_date,
+                            creation_date,
+                            expiration_date);
 
-									return Mono.fromRunnable(() -> transactionService.save(transaction))
-										   .thenReturn(pr);
-								    })
-								    .onErrorResume(e -> {
-									return Mono.just(new PreferenceRecordDTO("Erro ao criar a preferência"));
-								    });
+                    return Mono.fromRunnable(() -> transactionService.save(transaction))
+                            .thenReturn(pr);
+                })
+                .onErrorResume(e -> {
+                    return Mono.just(new PreferenceRecordDTO("Erro ao criar a preferência"));
+                });
 
-	return ResponseEntity.ok(preferenceMono
-					       .map(preference -> {
-						   if (preference.id() == null) {
-						       request.setHttpStatus(500);
-						       request.setResponse("Erro ao criar a preferência");
-						       requestService.save(request);
-						       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-									    .body(preference);
-						   }
-						   request.setHttpStatus(200);
-						   request.setResponse(preference.init_point() + preference.sandbox_init_point());
-						   requestService.save(request);
-						   return ResponseEntity.ok(preference);
-					       }));
+        return ResponseEntity.ok(preferenceMono
+                .map(preference -> {
+                    if (preference.id() == null) {
+                        request.setHttpStatus(500);
+                        request.setResponse("Erro ao criar a preferência");
+                        requestService.save(request);
+                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                .body(preference);
+                    }
+                    request.setHttpStatus(200);
+                    request.setResponse(preference.init_point() + preference.sandbox_init_point());
+                    requestService.save(request);
+                    return ResponseEntity.ok(preference);
+                }));
     }
 }
